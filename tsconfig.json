@@ -1,0 +1,32 @@
+{
+  "extends": "./tsconfig-base.json",
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "esnext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "rootDir": "src",
+    "declaration": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "pretty": true,
+    "jsx": "preserve",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment",
+    "jsxImportSource": "preact",
+    "noEmit": true, // esbuild handles this
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "isolatedModules": true,
+    "allowImportingTsExtensions": true,
+    "paths": {
+      "react": ["./node_modules/preact/compat/"],
+      "react-dom": ["./node_modules/preact/compat/"]
+    },
+    "types": []
+  },
+  "include": ["src/**/*", "*.d.ts"],
+  "exclude": ["node_modules", "ignore/**/*", "ignore/src/**/*", "src/**/*.ignore.ts"]
+}

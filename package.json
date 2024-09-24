@@ -1,0 +1,24 @@
+{
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "start": "node esbuild.config.js --start",
+    "build": "node esbuild.config.js --build",
+    "---additional": "---------------------------------------------------------------",
+    "format": "node ./node_modules/prettier/bin-prettier.js -w --config ./.prettierrc ."
+  },
+  "dependencies": {
+    "preact": "^10.22.1",
+    "preact-iso": "^2.6.3",
+    "preact-render-to-string": "^6.4.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0",
+    "esbuild-plugin-compress": "^1.0.1",
+    "prettier": "^2.7.1",
+    "quick-lint-js": "^3.2.0",
+    "sass": "^1.79.3",
+    "typescript": "<=5.2.0"
+  }
+}
