@@ -5,8 +5,10 @@ import path from 'path';
 export const writeOutputFiles = () => ({
   name: 'write-output-files',
   setup: (build) => {
-    build.onEnd(async ({ outputFiles }) => {
-      for (const { path: outputPath, contents } of outputFiles) {
+    build.onEnd(async (ctx) => {
+      // console.dir(ctx, { depth: null });
+
+      for (const { path: outputPath, contents } of ctx.outputFiles) {
         if (!contents?.length) return;
 
         if (!existsSync(path.dirname(outputPath))) {

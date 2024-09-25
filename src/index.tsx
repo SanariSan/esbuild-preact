@@ -5,12 +5,24 @@ import { Home } from './pages/Home/Home';
 import { NotFound } from './pages/_404';
 import './style.scss';
 import s from './x.module.scss';
+import { subscribeUpdates } from './hmr';
+// import { ChakraProvider } from '@chakra-ui/react';
+// import { DrawerExample } from './chakra-ui-test';
+
+subscribeUpdates();
 
 export function App() {
   return (
+    // <ChakraProvider resetCSS>
     <LocationProvider>
       <Header />
-      <div class={s.test}>test</div>
+      {/* <DrawerExample /> */}
+      <div class={s.test}>.module.scss test</div>
+      <input
+        type="text"
+        value={`Refresh state tracker: ${Math.random().toString(36).slice(2)}`}
+        style={{ width: '250px' }}
+      />
       <main>
         <Router>
           <Route path="/" component={Home} />
@@ -18,6 +30,7 @@ export function App() {
         </Router>
       </main>
     </LocationProvider>
+    // </ChakraProvider>
   );
 }
 

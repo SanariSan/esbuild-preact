@@ -1,6 +1,5 @@
 import { existsSync, cpSync } from 'fs';
 
-// might be slow with many files
 export const cp = (from, to, when = 'end') => ({
   name: `cp-${when}`,
   setup: (build) => {

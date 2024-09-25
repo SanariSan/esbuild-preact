@@ -1,7 +1,10 @@
 import { readFileSync, writeFileSync } from 'fs';
 import path from 'path';
 
-export const injectHtmlAssets = (htmlFilePath = './dist/index.html') => ({
+export const injectHtmlAssets = (
+  sourceHtmlPath = './public/index.html',
+  outputHtmlPath = './dist/index.html',
+) => ({
   name: 'inject-html-assets',
   setup: (build) => {
     build.onEnd((result) => {
@@ -10,15 +13,18 @@ export const injectHtmlAssets = (htmlFilePath = './dist/index.html') => ({
 
       for (let i = 0; i < result.outputFiles.length; i += 1) {
         const file = result.outputFiles[i];
+        const basename = path.basename(file.path);
 
-        if (file.path.endsWith('.js')) {
-          scriptTags += `<script type="module" src="./${path.basename(file.path)}"></script>\n`;
-        } else if (file.path.endsWith('.css')) {
-          linkTags += `<link rel="stylesheet" href="./${path.basename(file.path)}">\n`;
+        if (basename.endsWith('.js')) {
+          console.log(`Injecting JS asset: ${basename}`);
+          scriptTags += `<script type="module" src="./${basename}"></script>\n`;
+        } else if (basename.endsWith('.css')) {
+          console.log(`Injecting CSS asset: ${basename}`);
+          linkTags += `<link rel="stylesheet" href="./${basename}">\n`;
         }
       }
 
-      let htmlContent = readFileSync(htmlFilePath, 'utf8');
+      let htmlContent = readFileSync(sourceHtmlPath, 'utf8');
 
       if (scriptTags) {
         htmlContent = htmlContent.replace('</body>', `${scriptTags}</body>`);
@@ -28,7 +34,10 @@ export const injectHtmlAssets = (htmlFilePath = './dist/index.html') => ({
         htmlContent = htmlContent.replace('</head>', `${linkTags}</head>`);
       }
 
-      writeFileSync(htmlFilePath, htmlContent, 'utf8');
+      writeFileSync(outputHtmlPath, htmlContent, {
+        encoding: 'utf8',
+        flag: 'w',
+      });
 
       console.log(`Injected JS and CSS assets into HTML`);
     });

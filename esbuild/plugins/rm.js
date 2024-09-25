@@ -1,6 +1,5 @@
 import { rmSync, existsSync } from 'fs';
 
-// might be slow with many files
 export const rm = (dirs, when = 'end') => ({
   name: `rm-${when}`,
   setup: (build) => {
