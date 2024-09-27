@@ -12,13 +12,13 @@ export const subscribeUpdates = () =>
     : new EventSource('/esbuild').addEventListener('change', (e) => {
         const { added, removed, updated } = JSON.parse(e.data);
 
-        console.log({ added, removed, updated });
         if (!added.length && !removed.length) {
           let hasUpdatedCss = false;
           let hasUpdatedJs = false;
           let hasUpdatedUnknown = false;
           let cssUpdates: string[] = [];
 
+          // This ensures that only css was updated, so full page reload can be avoided
           for (let i = 0; i < updated.length; i += 1) {
             switch (true) {
               case updated[i].endsWith('.css'): {

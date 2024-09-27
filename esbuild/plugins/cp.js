@@ -1,7 +1,7 @@
 import { existsSync, cpSync } from 'fs';
 
 export const cp = (from, to, when = 'end') => ({
-  name: `cp-${when}`,
+  name: `plugin-cp-${when}`,
   setup: (build) => {
     const copy = () => {
       from.forEach((dir) => {

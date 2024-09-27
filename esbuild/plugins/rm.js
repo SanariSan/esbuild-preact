@@ -1,7 +1,7 @@
 import { rmSync, existsSync } from 'fs';
 
 export const rm = (dirs, when = 'end') => ({
-  name: `rm-${when}`,
+  name: `plugin-rm-${when}`,
   setup: (build) => {
     const rm = () => {
       dirs.forEach((dir) => {

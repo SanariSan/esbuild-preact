@@ -6,7 +6,7 @@ export const alias = (options) => {
   const re = new RegExp(`^(${aliases.map((x) => escapeRegExp(x)).join('|')})$`);
 
   return {
-    name: 'alias',
+    name: 'plugin-alias',
     setup(build) {
       // we do not register 'file' namespace here, because the root file won't be processed
       // https://github.com/evanw/esbuild/issues/791

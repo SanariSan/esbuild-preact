@@ -17,7 +17,7 @@ export function App() {
     <LocationProvider>
       <Header />
       {/* <DrawerExample /> */}
-      <div class={s.test}>.module.scss test</div>
+      <div className={s.test}>.module.scss test</div>
       <input
         type="text"
         value={`Refresh state tracker: ${Math.random().toString(36).slice(2)}`}

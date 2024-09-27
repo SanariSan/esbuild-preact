@@ -1,7 +1,7 @@
 import { mkdirSync, existsSync } from 'fs';
 
 export const mkdir = (dirs, when = 'start') => ({
-  name: `mkdir-${when}`,
+  name: `plugin-mkdir-${when}`,
   setup: (build) => {
     const makeDirs = () => {
       dirs.forEach((dir) => {

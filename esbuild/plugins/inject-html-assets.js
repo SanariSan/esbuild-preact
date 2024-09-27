@@ -5,7 +5,7 @@ export const injectHtmlAssets = (
   sourceHtmlPath = './public/index.html',
   outputHtmlPath = './dist/index.html',
 ) => ({
-  name: 'inject-html-assets',
+  name: 'plugin-inject-html-assets',
   setup: (build) => {
     build.onEnd((result) => {
       let scriptTags = '';

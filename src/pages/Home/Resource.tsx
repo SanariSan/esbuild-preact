@@ -6,7 +6,7 @@ type ResourceProps = {
 
 export function Resource({ href, title, description }: ResourceProps) {
   return (
-    <a href={href} target="_blank" rel="noreferrer" class="resource">
+    <a href={href} target="_blank" rel="noreferrer" className="resource">
       <h2>{title}</h2>
       <p>{description}</p>
     </a>

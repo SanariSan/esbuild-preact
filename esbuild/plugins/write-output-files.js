@@ -1,9 +1,9 @@
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import path from 'path';
 
-// slow and sync, debug purpose
+// just write the output files
 export const writeOutputFiles = () => ({
-  name: 'write-output-files',
+  name: 'plugin-write',
   setup: (build) => {
     build.onEnd(async (ctx) => {
       // console.dir(ctx, { depth: null });

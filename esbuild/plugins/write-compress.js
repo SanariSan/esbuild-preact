@@ -1,13 +1,7 @@
 /**
- * Modified compress plugin
+ * Enhanced compress plugin
  * https://github.com/LinbuduLab/esbuild-plugins/tree/main/packages/esbuild-plugin-compress
  */
-
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import path from 'path';
-import picomatch from 'picomatch';
-import { brotliCompressSync, gzipSync } from 'zlib';
-import { murmurhash3_32_gc } from '../util/index.js';
 
 /**
  * @typedef {import('zlib').BrotliOptions} BrotliOptions
@@ -15,6 +9,12 @@ import { murmurhash3_32_gc } from '../util/index.js';
  * @typedef {import('esbuild').Plugin} Plugin
  * @typedef {import('./write-compress').CompressOptions} CompressOptions
  */
+
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
+import path from 'path';
+import picomatch from 'picomatch';
+import { brotliCompressSync, gzipSync } from 'zlib';
+import { murmurhash3_32_gc } from '../util/index.js';
 
 /**
  * @param {string} path
@@ -66,7 +66,12 @@ const writeCompressed = ({ gzip, gzipOptions, brotli, brotliOptions, originPath,
   if (brotli) writeBrotliCompress(originPath, contents, brotliOptions);
 };
 
-// caution, no rotation
+// --------------------------------------------------
+
+/**
+ * CAUTION ; no rotation cache map.
+ * Stores path:file_content_hash entries thus won't cause memory problems even over time.
+ */
 const cache = {};
 
 /**
