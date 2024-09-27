@@ -6,3 +6,5 @@ export * from './sass.js';
 export * from './write-compress.js';
 export * from './mkdir.js';
 export * from './alias.js';
+export * from './buildTracker.js';
+export * from './env.js';

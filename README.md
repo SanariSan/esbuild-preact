@@ -9,17 +9,25 @@
 - Gzip/Brotli/Both output encoding
 - Built-in chunking (at least in the js department, though I'm not sure about CSS)
 - Re-build simple caching to cut time even further
+- Env vars substitution
 - Live reload and partial Hot Module Replacement (CSS only)
 - Linter (not a heavy eslint)
 - Prettier
 - Tested with chakra-ui to ensure react backwards compatibility (lib not included)
 
 Build time:
-- Gzip, No chakra 270ms
-- Gzip, With chakra 340ms
+- Gzip, No chakra ; yarn build -> `270ms` ; actual build -> `57ms`
+
+<img src="https://github.com/SanariSan/esbuild-preact/blob/master/etc/1.png?raw=true" width="440" height="18">
+
+- Gzip, With chakra ; yarn build -> `340ms`
 
 Rebuild time:
-- Even faster :)
+- Gzip, No chakra ; initial yarn build -> `270ms` ; changes -> `15ms`
+
+<img src="https://github.com/SanariSan/esbuild-preact/blob/master/etc/2.png?raw=true" width="440" height="18">
+
+And it could be even lower with optimizations, but with such absurdly low metrics, there's just no point.
 
 #### All of that fits into `82.9 MiB` of `node_modules` space, including dev dependencies. <img src="https://static-cdn.jtvnw.net/emoticons/v2/305253890/default/light/2.0" width=24 height=24 />
 

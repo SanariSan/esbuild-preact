@@ -6,10 +6,11 @@ import { NotFound } from './pages/_404';
 import './style.scss';
 import s from './x.module.scss';
 import { subscribeUpdates } from './hmr';
+import { NODE_ENV } from 'env';
 // import { ChakraProvider } from '@chakra-ui/react';
 // import { DrawerExample } from './chakra-ui-test';
 
-subscribeUpdates();
+if (NODE_ENV === 'development') subscribeUpdates();
 
 export function App() {
   return (

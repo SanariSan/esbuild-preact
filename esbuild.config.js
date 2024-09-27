@@ -1,7 +1,26 @@
 import esbuild from 'esbuild';
-import { cp, rm, injectHtmlAssets, sass, writeCompress, mkdir, alias } from './esbuild/index.js';
+import {
+  cp,
+  rm,
+  injectHtmlAssets,
+  sass,
+  writeCompress,
+  mkdir,
+  alias,
+  log,
+  buildTracker,
+  env,
+} from './esbuild/index.js';
 import { existsSync, rmSync } from 'fs';
 import path from 'path';
+
+// Had to link directly to .js files, docs recommended format did not work
+const aliases = {
+  react: path.resolve('./node_modules/preact/compat/dist/compat.js'),
+  'react/jsx-runtime': path.resolve('./node_modules/preact/compat/jsx-runtime.js'),
+  'react-dom': path.resolve('./node_modules/preact/compat/dist/compat.js'),
+  'react-dom/*': path.resolve('./node_modules/preact/compat/dist/compat.js'),
+};
 
 const assetsLoaders = {
   '.png': 'file',
@@ -16,14 +35,6 @@ const assetsLoaders = {
   '.ttf': 'file',
   '.otf': 'file',
   '.webm': 'file',
-};
-
-// Had to link directly to .js files, docs recommended format did not work
-const aliases = {
-  react: path.resolve('./node_modules/preact/compat/dist/compat.js'),
-  'react/jsx-runtime': path.resolve('./node_modules/preact/compat/jsx-runtime.js'),
-  'react-dom': path.resolve('./node_modules/preact/compat/dist/compat.js'),
-  'react-dom/*': path.resolve('./node_modules/preact/compat/dist/compat.js'),
 };
 
 if (process.argv.includes('--build')) {
@@ -47,11 +58,9 @@ if (process.argv.includes('--build')) {
     jsx: 'automatic',
     jsxDev: false,
     loader: assetsLoaders,
-    // assetNames: 'assets/[name]-[hash]', https://esbuild.github.io/api/#asset-names
-    // chunkNames: 'chunks/[name]-[hash]', https://esbuild.github.io/api/#chunk-names
-    // entryNames: '[dir]/[name]-[hash]', https://esbuild.github.io/api/#entry-names
-    // publicPath: 'https://www.example.com/v1', https://esbuild.github.io/api/#public-path
     plugins: [
+      buildTracker('start'),
+      env(),
       rm(['./dist'], 'start'),
       mkdir(['./dist'], 'start'),
       cp(['./public/static'], './dist', 'start'),
@@ -65,16 +74,24 @@ if (process.argv.includes('--build')) {
         externalTargets: ['dist/index.html', 'dist/favicon.ico'],
         emitExternalOrigin: false,
       }),
+      buildTracker('end'),
     ],
-    logLevel: 'info',
-    metafile: true,
+    logLevel: 'warning',
+    // metafile: true,
+    // assetNames: 'assets/[name]-[hash]', https://esbuild.github.io/api/#asset-names
+    // chunkNames: 'chunks/[name]-[hash]', https://esbuild.github.io/api/#chunk-names
+    // entryNames: '[dir]/[name]-[hash]', https://esbuild.github.io/api/#entry-names
+    // publicPath: 'https://www.example.com/v1', https://esbuild.github.io/api/#public-path
   });
 
   // writeFileSync('meta.json', JSON.stringify(result.metafile));
 }
 
 if (process.argv.includes('--start')) {
-  if (existsSync('./dist')) rmSync('./dist', { force: true, recursive: true });
+  if (existsSync('./dist')) {
+    rmSync('./dist', { force: true, recursive: true });
+    log('warn', 'Deleted dist folder on init');
+  }
 
   const ctx = await esbuild.context({
     entryPoints: ['src/index.tsx'],
@@ -82,7 +99,7 @@ if (process.argv.includes('--start')) {
     write: false, // handling manually
     minify: false,
     sourcemap: true,
-    // splitting: true,
+    splitting: false,
     // outdir: './dist',
     outfile: 'dist/bundle.js',
     platform: 'browser',
@@ -97,11 +114,9 @@ if (process.argv.includes('--start')) {
     jsx: 'automatic',
     jsxDev: true,
     loader: assetsLoaders,
-    // assetNames: 'assets/[name]-[hash]', https://esbuild.github.io/api/#asset-names
-    // chunkNames: 'chunks/[name]-[hash]', https://esbuild.github.io/api/#chunk-names
-    // entryNames: '[dir]/[name]-[hash]', https://esbuild.github.io/api/#entry-names
-    // publicPath: 'https://www.example.com/v1', https://esbuild.github.io/api/#public-path
     plugins: [
+      buildTracker('start'),
+      env(),
       // no rm() to provide sequential builds using cache map (look writeCompress)
       mkdir(['./dist'], 'start'),
       cp(['./public/static'], './dist', 'start'),
@@ -116,9 +131,14 @@ if (process.argv.includes('--start')) {
         externalTargets: ['dist/index.html', 'dist/favicon.ico'],
         emitExternalOrigin: false, // because original files are already in final directory
       }),
+      buildTracker('end'),
     ],
-    logLevel: 'info',
-    metafile: true,
+    logLevel: 'warning',
+    // metafile: true,
+    // assetNames: 'assets/[name]-[hash]', https://esbuild.github.io/api/#asset-names
+    // chunkNames: 'chunks/[name]-[hash]', https://esbuild.github.io/api/#chunk-names
+    // entryNames: '[dir]/[name]-[hash]', https://esbuild.github.io/api/#entry-names
+    // publicPath: 'https://www.example.com/v1', https://esbuild.github.io/api/#public-path
   });
 
   await ctx.watch();
@@ -126,7 +146,7 @@ if (process.argv.includes('--start')) {
   let { host, port } = await ctx.serve({
     servedir: 'dist',
     onRequest: ({ remoteAddress, method, path, status, timeInMS }) => {
-      console.info(remoteAddress, status, `"${method} ${path}" [${timeInMS}ms]`);
+      log('info', remoteAddress, status, `"${method} ${path}" [${timeInMS}ms]`);
     },
   });
 

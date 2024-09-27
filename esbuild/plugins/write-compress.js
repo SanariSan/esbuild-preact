@@ -14,7 +14,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import path from 'path';
 import picomatch from 'picomatch';
 import { brotliCompressSync, gzipSync } from 'zlib';
-import { murmurhash3_32_gc } from '../util/index.js';
+import { log, murmurhash3_32_gc } from '../util/index.js';
 
 /**
  * @param {string} path
@@ -70,7 +70,7 @@ const writeCompressed = ({ gzip, gzipOptions, brotli, brotliOptions, originPath,
 
 /**
  * CAUTION ; no rotation cache map.
- * Stores path:file_content_hash entries thus won't cause memory problems even over time.
+ * Stores path:file_content_hash entries thus shouldn't cause memory problems even over time.
  */
 const cache = {};
 
@@ -92,28 +92,33 @@ export const writeCompress = ({
     name: 'plugin-write-compress',
     setup({ initialOptions: { write }, onEnd }) {
       if (write === true) {
-        console.log('Set write option as false to use compress plugin.');
+        log('error', 'Set write option as false to use compress plugin.');
         return;
       }
 
       const shouldCompress = gzip || brotli;
 
       onEnd(async ({ outputFiles }) => {
+        log('warn', 'Compressing...');
+
         for (const { path: originPath, contents } of outputFiles || []) {
           if (!contents?.length) continue;
 
           const shouldExclude = picomatch.isMatch(originPath, exclude);
           if (shouldExclude && !emitOrigin) continue;
 
+          const cwd = process.cwd();
+          const relativePath = path.relative(cwd, originPath);
+
           const hashed = murmurhash3_32_gc(contents, 0);
           if (cache[originPath] === hashed) {
-            console.log(`[Cached] Skip processing internal file: ${originPath}`);
+            log('info', `[Cached] Skip processing internal file: ${relativePath}`);
             continue;
           }
           cache[originPath] = hashed;
 
           if (!shouldExclude && shouldCompress) {
-            console.log(`Compressing and writing internal file: ${originPath}`);
+            log('info', `Compressing and writing internal file: ${relativePath}`);
             writeCompressed({
               gzip,
               gzipOptions,
@@ -125,7 +130,7 @@ export const writeCompress = ({
           }
 
           if ((!shouldExclude && emitOrigin) || emitOrigin === 'force') {
-            console.log(`Writing origin file: ${originPath}`);
+            log('info', `Writing origin file: ${relativePath}`);
             writeOriginFiles(originPath, contents);
           }
         }
@@ -138,15 +143,18 @@ export const writeCompress = ({
           const contents = readFileSync(originPath);
           if (!contents?.length) continue;
 
+          const cwd = process.cwd();
+          const relativePath = path.relative(cwd, originPath);
+
           const hashed = murmurhash3_32_gc(contents, 0);
           if (cache[originPath] === hashed) {
-            console.log(`[Cached] Skip processing external file: ${originPath}`);
+            log('info', `[Cached] Skip processing external file: ${relativePath}`);
             continue;
           }
           cache[originPath] = hashed;
 
           if (!shouldExclude && shouldCompress) {
-            console.log(`Compressing and writing external file: ${originPath}`);
+            log('info', `Compressing and writing external file: ${relativePath}`);
             writeCompressed({
               gzip,
               gzipOptions,
@@ -158,10 +166,12 @@ export const writeCompress = ({
           }
 
           if ((!shouldExclude && emitExternalOrigin) || emitExternalOrigin === 'force') {
-            console.log(`Writing external origin file: ${originPath}`);
+            log('info', `Writing external origin file: ${relativePath}`);
             writeOriginFiles(originPath, contents);
           }
         }
+
+        log('warn', 'Finished compressing and writing files');
       });
     },
   };

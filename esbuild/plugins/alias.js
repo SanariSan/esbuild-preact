@@ -1,5 +1,18 @@
 /**
+ * Redirect undesired imports to custom paths
  * https://www.npmjs.com/package/esbuild-plugin-alias
+ */
+
+/**
+ * @typedef {import('esbuild').Plugin} Plugin
+ */
+
+/**
+ * @param {Record<string, string>} options - alias to path map.
+ * @returns {import('esbuild').Plugin}
+ *
+ * @example
+ * { react: path.resolve('./node_modules/preact/compat/dist/compat.js') }
  */
 export const alias = (options) => {
   const aliases = Object.keys(options);

@@ -1,5 +1,6 @@
 import { readFileSync, writeFileSync } from 'fs';
 import path from 'path';
+import { log } from '../util/index.js';
 
 export const injectHtmlAssets = (
   sourceHtmlPath = './public/index.html',
@@ -14,12 +15,13 @@ export const injectHtmlAssets = (
       for (let i = 0; i < result.outputFiles.length; i += 1) {
         const file = result.outputFiles[i];
         const basename = path.basename(file.path);
+        const relativePath = path.relative(process.cwd(), file.path);
 
-        if (basename.endsWith('.js')) {
-          console.log(`Injecting JS asset: ${basename}`);
+        if (relativePath.endsWith('.js')) {
+          log('info', `Injecting JS asset: ${relativePath}`);
           scriptTags += `<script type="module" src="./${basename}"></script>\n`;
-        } else if (basename.endsWith('.css')) {
-          console.log(`Injecting CSS asset: ${basename}`);
+        } else if (relativePath.endsWith('.css')) {
+          log('info', `Injecting CSS asset: ${relativePath}`);
           linkTags += `<link rel="stylesheet" href="./${basename}">\n`;
         }
       }
@@ -39,7 +41,7 @@ export const injectHtmlAssets = (
         flag: 'w',
       });
 
-      console.log(`Injected JS and CSS assets into HTML`);
+      log('warn', `Injected JS and CSS assets into HTML`);
     });
   },
 });

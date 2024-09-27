@@ -5,7 +5,6 @@
  */
 const shoudTryHMR = true;
 
-// Live reload ; todo: conditionally use in dev only
 export const subscribeUpdates = () =>
   !shoudTryHMR
     ? new EventSource('/esbuild').addEventListener('change', () => location.reload())
