@@ -15,6 +15,11 @@
 - Prettier
 - Tested with chakra-ui to ensure react backwards compatibility (lib not included)
 
+To use with `React`:
+- Add `react`, `react-dom`
+- Remove aliasing in `esbuild.config.js`
+- Remove preact paths, `jsxFactory`, `jsxFragmentFactory` and `jsxImportSource` in `tsconfig.json`
+
 Build time:
 - Gzip, No chakra ; yarn build -> `270ms` ; actual build -> `57ms`
 
