@@ -9,6 +9,7 @@
     "format": "node ./node_modules/prettier/bin-prettier.js -w --config ./.prettierrc ."
   },
   "dependencies": {
+    "jotai": "^2.10.0",
     "preact": "^10.22.1",
     "preact-iso": "^2.6.3",
     "preact-render-to-string": "^6.4.0"

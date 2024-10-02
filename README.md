@@ -3,6 +3,7 @@
 ## Bare minimum modern frontend setup. Not a library or solution, just a starter template for myself, as I've grown tired of the `node_modules` black hole being 100 times larger than the entire project codebase.
 
 - Preact (1:1 React experience with smaller bundle)
+- Global store using `Jotai`
 - SASS
 - Esbuild (Blazingly fast bundling/re-building)
 - Compatibility defaults from Vite and no Babel used - `'es6', 'chrome87', 'firefox78', 'safari14', 'edge88'`
@@ -34,26 +35,31 @@ Rebuild time:
 
 And it could be even lower with optimizations, but with such absurdly low metrics, there's just no point.
 
-#### All of that fits into `82.9 MiB` of `node_modules` space, including dev dependencies. <img src="https://static-cdn.jtvnw.net/emoticons/v2/305253890/default/light/2.0" width=24 height=24 />
+#### All of that fits into `84.1 MiB` of `node_modules` space, including dev dependencies. <img src="https://static-cdn.jtvnw.net/emoticons/v2/305253890/default/light/2.0" width=24 height=24 />
 
 #### These are the bare minimum dependencies used:
 
 ```js
 "dependencies": {
-  "preact": "^10.22.1",
-  "preact-iso": "^2.6.3",
-  "preact-render-to-string": "^6.4.0"
+  "jotai": "^2.10.0", // 1.2 MiB
+  "preact": "^10.22.1", // 1.8 MiB
+  "preact-iso": "^2.6.3", // 68.0 KiB
+  "preact-render-to-string": "^6.4.0" // 964.0 KiB
 },
 "devDependencies": {
-  "@types/node": "^22.5.1",
-  "esbuild": "^0.24.0",
-  "picomatch": "^4.0.2",
-  "prettier": "^2.7.1",
-  "quick-lint-js": "^3.2.0",
-  "sass": "^1.79.3",
-  "typescript": "<=5.2.0"
+  "@types/node": "^22.5.1", // 2.3 MiB (@types in general)
+  "esbuild": "^0.24.0", // 9.7 MiB
+  "picomatch": "^4.0.2", // 116.0 KiB
+  "prettier": "^2.7.1", // 10.8 MiB
+  "quick-lint-js": "^3.2.0", // 11.6 MiB
+  "sass": "^1.79.3", // 5.5 MiB
+  "typescript": "<=5.2.0" // 38.6 MiB
 }
 ```
+
+Additionally, there are some child dependencies totaling `2-3 MiB`, and that's it. There are only 17 directories in the node_modules folder, so you could literally read the source code of all of them in one day. 👀
+
+---
 
 I haven't compared the output bundle size with other build tools yet since the codebase is too small to draw any real conclusions, but I'll probably add that in later.
 
